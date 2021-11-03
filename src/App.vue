@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="card-tools" v-if="tools">
-      <!-- <center>
+      <center>
         <button
           class="button add-marker"
           :style="{ 'background-color': addMode ? '#66f13d' : '#3d66f1' }"
@@ -20,7 +20,7 @@
         </button>
       </center>
       <hr />
-      -->
+
       <table class="alignment">
         <tr>
           <td colspan="3">
@@ -84,6 +84,7 @@
           </button>
         </center>
       </div>
+      <br />
       <hr />
       <div class="live-editor">
         <textarea v-model="html"></textarea>
@@ -104,13 +105,13 @@
       ref="myMap"
       style="width: 100%; height: 100%"
       :zoom="10"
-      :center="markerCenter"
+      :center="mapCenter"
     >
       <l-tile-layer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="http://osm.org/copyright"
       ></l-tile-layer>
-      <!-- <custom-marker
+      <custom-marker
         v-for="(marker, i) in markers"
         :key="marker._id"
         :delayRepaint="marker.weather ? 250 : 0"
@@ -118,7 +119,7 @@
         :alignment="marker.alignment"
         @click.native="deleteMarker(i)"
       >
-        <weather v-if="marker.weather" :coords="marker" />
+        <weather-widget v-if="marker.weather" :coords="marker" />
         <img
           :class="animation"
           v-else
@@ -127,7 +128,7 @@
           :src="src"
           height="45"
         />
-      </custom-marker> -->
+      </custom-marker>
       <custom-marker
         :alignment="alignment"
         key="supermarker"
@@ -136,20 +137,24 @@
         <div class="card" @click="(e) => e.stopPropagation()">
           <center>
             <h3>This is a marker</h3>
-            <p>Lat : {{ markerCenter.lat }}, Lng : {{ markerCenter.lng }}</p>
+            <p>Lat : {{ markerCenter.lat }}</p>
+            <p>Lng : {{ markerCenter.lng }}</p>
+            <div class="image-wrapper">
+              <img :class="animation" class="icon" :src="src" />
+            </div>
+            <div class="input-group">
+              <center>
+                <label>Set marker image urls</label>
+              </center>
+              <input
+                type="input"
+                placeholder="set new image url"
+                v-model="testText"
+              />
+            </div>
+            <button @click="left">&lt;</button>
+            <button @click="right">&gt;</button>
           </center>
-          <img :class="animation" class="icon" :src="src" height="75" />
-          <div class="input-group">
-            <center>
-              <label>Set marker image urls</label>
-            </center>
-            <br />
-            <input
-              type="input"
-              placeholder="set new image url"
-              v-model="testText"
-            />
-          </div>
         </div>
       </custom-marker>
       <!-- <custom-marker :z-index="zA" :marker="{ lat: 50.4272265, lng: 2.95 }">
@@ -176,7 +181,11 @@
           </center>
         </div>
       </custom-marker> -->
-      <custom-marker alignment="center" :marker="{ lat: 50.7, lng: 3.8 }">
+      <custom-marker
+        key="live-html"
+        alignment="center"
+        :marker="{ lat: 50.7, lng: 3.8 }"
+      >
         <div class="live-html" v-html="html"></div>
       </custom-marker>
     </l-map>
@@ -186,15 +195,14 @@
 <script>
 import CustomMarker from 'vue-leaflet-custom-marker'
 import { LMap, LTileLayer } from 'vue2-leaflet'
-console.log(CustomMarker)
-// import Weather from "./components/weather";
+import WeatherWidget from './components/WeatherWidget'
 export default {
   name: 'app',
   components: {
     CustomMarker,
     LMap,
-    LTileLayer
-    // Weather,
+    LTileLayer,
+    WeatherWidget
   },
   data () {
     return {
@@ -206,6 +214,10 @@ export default {
       zB: 51,
       testText: '',
       markerCenter: {
+        lat: 50.6272265,
+        lng: 3.0571581
+      },
+      mapCenter: {
         lat: 50.6272265,
         lng: 3.0571581
       },
@@ -225,10 +237,22 @@ export default {
       return `animated ${infinite} ${this.selectedAnimation}`
     },
     src () {
-      return this.testText ? this.testText : 'https://vuejs.org/images/logo.png'
+      return this.testText ? this.testText : '/logo.png'
     }
   },
   methods: {
+    left () {
+      this.markerCenter = {
+        lng: this.markerCenter.lng - 0.1,
+        lat: this.markerCenter.lat
+      }
+    },
+    right () {
+      this.markerCenter = {
+        lng: this.markerCenter.lng + 0.1,
+        lat: this.markerCenter.lat
+      }
+    },
     displayTools (value) {
       this.tools = value
     },
@@ -239,8 +263,8 @@ export default {
       if (this.addMode) {
         this.markers.push({
           _id: this.ids++,
-          latitude: event.latLng.lat(),
-          longitude: event.latLng.lng(),
+          lat: event.latlng.lat,
+          lng: event.latlng.lng,
           weather: this.addWeather,
           alignment: this.alignment
         })
@@ -320,9 +344,9 @@ button {
   border-radius: 4px;
   background-color: #fafafa;
   padding: 15px;
-  box-shadow: 3px 3px 3px grey;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
-  min-height: 110px;
+  min-height: 220px;
 }
 .input-group {
   float: right;
@@ -333,13 +357,14 @@ button {
   margin-left: 15px;
 }
 .alignment button {
-  color: #28a745;
+  color: #eee;
   width: 80px;
   padding: 5px;
   border-radius: 5px;
-  background-color: white;
-  border: 1px solid #28a745;
+  background-color: #47c765;
+  border: none;
   margin: 2px;
+  font-size: 0.8em;
 }
 
 .alignment {
@@ -409,10 +434,11 @@ button {
   padding: 8px;
   background-color: #fafafa;
   border: 1px solid #bbb;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px #aaa;
   width: 270px;
   z-index: 1000;
   position: absolute;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
 }
 
 .batch-cluster > input,
@@ -435,5 +461,9 @@ button {
   border: 1px solid #bbb;
   font-size: 1.3em;
   z-index: 1000;
+}
+.image-wrapper,
+.image-wrapper img {
+  height: 75px;
 }
 </style>
