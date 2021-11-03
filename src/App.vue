@@ -225,9 +225,7 @@ export default {
       return `animated ${infinite} ${this.selectedAnimation}`
     },
     src () {
-      return this.testText
-        ? this.testText
-        : 'https://vuejs.org/images/logo.png'
+      return this.testText ? this.testText : 'https://vuejs.org/images/logo.png'
     }
   },
   methods: {
