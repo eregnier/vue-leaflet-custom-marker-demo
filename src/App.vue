@@ -18,7 +18,7 @@
         >
           {{ addWeather ? "Weather marker" : "★ Icon Marker" }}
         </button>
-      </center> 
+      </center>
       <hr />
       -->
       <table class="alignment">
@@ -184,86 +184,86 @@
 </template>
 
 <script>
-import CustomMarker from "vue-leaflet-custom-marker";
-console.log(CustomMarker);
-import { LMap, LTileLayer } from "vue2-leaflet";
+import CustomMarker from 'vue-leaflet-custom-marker'
+import { LMap, LTileLayer } from 'vue2-leaflet'
+console.log(CustomMarker)
 // import Weather from "./components/weather";
 export default {
-  name: "app",
+  name: 'app',
   components: {
     CustomMarker,
     LMap,
-    LTileLayer,
+    LTileLayer
     // Weather,
   },
-  data() {
+  data () {
     return {
       batchCount: 10,
       html: '<center><h2>This is <u>live</u> html marker 🔥</h2></center> <iframe width="330" height="170" src="https://www.youtube.com/embed/RySHDUU2juM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
       infinite: true,
-      selectedAnimation: "",
+      selectedAnimation: '',
       zA: 50,
       zB: 51,
-      testText: "",
+      testText: '',
       markerCenter: {
         lat: 50.6272265,
-        lng: 3.0571581,
+        lng: 3.0571581
       },
       addWeather: false,
       addMode: false,
       markers: [],
       ids: 0,
-      alignment: "center",
-      animations: require("./animations.json"),
+      alignment: 'center',
+      animations: require('./animations.json'),
       batchMarkers: [],
-      tools: true,
-    };
+      tools: true
+    }
   },
   computed: {
-    animation() {
-      const infinite = this.infinite ? "infinite" : "";
-      return `animated ${infinite} ${this.selectedAnimation}`;
+    animation () {
+      const infinite = this.infinite ? 'infinite' : ''
+      return `animated ${infinite} ${this.selectedAnimation}`
     },
-    src() {
+    src () {
       return this.testText
         ? this.testText
-        : "https://vuejs.org/images/logo.png";
-    },
+        : 'https://vuejs.org/images/logo.png'
+    }
   },
   methods: {
-    displayTools(value) {
-      this.tools = value;
+    displayTools (value) {
+      this.tools = value
     },
-    deleteMarker(i) {
-      this.markers.splice(i, 1);
+    deleteMarker (i) {
+      this.markers.splice(i, 1)
     },
-    onMapClick(event) {
+    onMapClick (event) {
       if (this.addMode) {
         this.markers.push({
           _id: this.ids++,
           latitude: event.latLng.lat(),
           longitude: event.latLng.lng(),
           weather: this.addWeather,
-          alignment: this.alignment,
-        });
-        this.addMode = false;
+          alignment: this.alignment
+        })
+        this.addMode = false
       }
     },
-    addbatch() {
-      this.batchMarkers = [];
+    addbatch () {
+      this.batchMarkers = []
       for (let i = 0; i < this.batchCount; i++) {
         this.batchMarkers.push({
           lat: `48.1${String(parseInt(Math.random() * 100000))}`,
-          lng: `-1.7${String(parseInt(Math.random() * 100000))}`,
-        });
+          lng: `-1.7${String(parseInt(Math.random() * 100000))}`
+        })
       }
       this.markerCenter = {
         lat: 48.1030572,
-        lng: -1.7065389,
-      };
-    },
-  },
-};
+        lng: -1.7065389
+      }
+    }
+  }
+}
 </script>
 
 <style>
