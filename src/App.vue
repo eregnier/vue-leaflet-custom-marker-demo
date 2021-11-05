@@ -112,9 +112,23 @@
         attribution="http://osm.org/copyright"
       ></l-tile-layer>
       <custom-marker
+        v-for="(marker, i) in activityMarkers"
+        :key="`activity-marker-${i}`"
+        :marker="marker"
+        @click.native="toggleInfo(marker)"
+      >
+        <div class="activity-info" v-if="marker.displayInfo">
+          There is {{ marker.type.replace(".png", "") }} activity here
+        </div>
+        <img class="activity-marker" src="/marker.png" />
+        <div class="activity-marker-wrapper">
+          <img class="activity-marker-type" :src="marker.type" />
+        </div>
+      </custom-marker>
+
+      <custom-marker
         v-for="(marker, i) in markers"
         :key="marker._id"
-        :delayRepaint="marker.weather ? 250 : 0"
         :marker="marker"
         :alignment="marker.alignment"
         @click.native="deleteMarker(i)"
@@ -228,7 +242,39 @@ export default {
       alignment: 'center',
       animations: require('./animations.json'),
       batchMarkers: [],
-      tools: true
+      tools: true,
+      activityMarkers: [
+        {
+          displayInfo: false,
+          lat: 50.7,
+          lng: 2.5,
+          type: 'badmington.png'
+        },
+        {
+          displayInfo: false,
+          lat: 50.5,
+          lng: 2.3,
+          type: 'golf.png'
+        },
+        {
+          displayInfo: false,
+          lat: 50.8,
+          lng: 2.8,
+          type: 'ping-pong.png'
+        },
+        {
+          displayInfo: false,
+          lat: 50.2,
+          lng: 2.7,
+          type: 'rugby.png'
+        },
+        {
+          displayInfo: false,
+          lat: 50.3,
+          lng: 2.3,
+          type: 'tennis.png'
+        }
+      ]
     }
   },
   computed: {
@@ -241,6 +287,9 @@ export default {
     }
   },
   methods: {
+    toggleInfo (marker) {
+      marker.displayInfo = !marker.displayInfo
+    },
     left () {
       this.markerCenter = {
         lng: this.markerCenter.lng - 0.1,
@@ -465,5 +514,34 @@ button {
 .image-wrapper,
 .image-wrapper img {
   height: 75px;
+}
+
+.activity-marker {
+  height: 150px;
+  position: absolute;
+  z-index: 20;
+}
+.activity-marker-type {
+  height: 55px;
+}
+.activity-marker-wrapper {
+  z-index: 25;
+  text-align: center;
+  padding-top: 20px;
+  position: absolute;
+  width: 100px;
+  height: 150px;
+}
+.activity-info {
+  text-align: center;
+  position: absolute;
+  top: -80px;
+  left: -60px;
+  height: 70px;
+  font-size: 2em;
+  width: 230px;
+  border: 1px solid #aaa;
+  background-color:white;
+  border-radius: 8px;
 }
 </style>
