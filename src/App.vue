@@ -116,14 +116,15 @@
         :key="`activity-marker-${i}`"
         :marker="marker"
         @click.native="toggleInfo(marker)"
+        alignment="top"
       >
         <div class="activity-info" v-if="marker.displayInfo">
           There is {{ marker.type.replace(".png", "") }} activity here
         </div>
-        <img class="activity-marker" src="/marker.png" />
         <div class="activity-marker-wrapper">
           <img class="activity-marker-type" :src="marker.type" />
         </div>
+        <img class="activity-marker" src="/marker.png" />
       </custom-marker>
 
       <custom-marker
@@ -518,19 +519,17 @@ button {
 
 .activity-marker {
   height: 150px;
-  position: absolute;
   z-index: 20;
 }
 .activity-marker-type {
   height: 55px;
 }
 .activity-marker-wrapper {
+  position: absolute;
   z-index: 25;
   text-align: center;
-  padding-top: 20px;
-  position: absolute;
   width: 100px;
-  height: 150px;
+  top: 20px;
 }
 .activity-info {
   text-align: center;
